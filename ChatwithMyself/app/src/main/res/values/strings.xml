@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Chat with Myself</string>
+    <string name="message_hint">Type a message...</string>
+    <string name="send_message">Send Message</string>
+</resources>

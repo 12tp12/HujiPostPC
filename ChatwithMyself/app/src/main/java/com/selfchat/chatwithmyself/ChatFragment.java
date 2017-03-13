@@ -99,13 +99,12 @@ public class ChatFragment extends Fragment {
 
         public void setmMessages(ArrayList<Message> mMessages) {
             this.mMessages = mMessages;
-            notifyDataSetChanged();
         }
 
         public void addItem(Message message)
         {
             this.mMessages.add(message);
-            notifyDataSetChanged();
+            notifyItemInserted(this.mMessages.size() - 1);
         }
 
         @Override

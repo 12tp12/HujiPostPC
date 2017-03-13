@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
             chatFragment = new ChatFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             Log.i("debugging", "commiting new fragment...");
-            transaction.add(R.id.chat_fragment_container, chatFragment);
+            transaction.add(R.id.chat_fragment_container, chatFragment, CHAT_FRAGMENT);
             transaction.commit();
         }
         else

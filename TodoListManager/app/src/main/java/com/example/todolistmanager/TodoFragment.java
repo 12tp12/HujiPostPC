@@ -3,6 +3,7 @@ package com.example.todolistmanager;
 /**
  * Created by Tomer Patel on 3/18/2017.
  */
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.DialogInterface;
+import 	android.app.AlertDialog;
 
 import java.util.ArrayList;
 
@@ -54,6 +57,9 @@ public class TodoFragment extends Fragment{
             adapter.setmMessages((ArrayList<TodoMessage>)savedInstanceState.getSerializable("adapterList"));
             Log.i("debugging", "restored last messages...");
         }
+
+
+
         return pView;
     }
 
@@ -77,11 +83,44 @@ public class TodoFragment extends Fragment{
         {
             TextView todoMessageTextView;
             TextView hourCreatedTextView;
-            protected ViewHolder(CardView cv)
+            CardView cv;
+            protected ViewHolder(final CardView cv)
             {
                 super(cv);
+                this.cv = cv;
                 this.todoMessageTextView = (TextView) cv.findViewById(R.id.todo_message_body);
                 this.hourCreatedTextView = (TextView) cv.findViewById(R.id.todo_message_create_time);
+                cv.setLongClickable(true);
+                cv.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+//                        int position = getAdapterPosition();
+//                        adapter.notifyItemRemoved(position);
+//                        adapter.notifyItemRangeChanged(position, adapter.getmMessages().size());
+                        AlertDialog dialog = new AlertDialog.Builder(cv.getContext())
+                                .setTitle("Delete Task?")
+                                .setMessage("Sure you want to delete this task?")
+                                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        int position = getAdapterPosition();
+                                        adapter.getmMessages().remove(position);
+                                        adapter.notifyItemRemoved(position);
+                                        adapter.notifyItemRangeChanged(position, adapter.getmMessages().size());
+
+                                    }
+                                })
+                                .setNegativeButton("Cancel", null)
+                                .create();
+                        dialog.show();
+                        return true;
+                    }
+                });
+
+
+            }
+            public void setBackGroundColor(int colorBG){
+                this.cv.setCardBackgroundColor(colorBG);
             }
         }
 
@@ -115,15 +154,23 @@ public class TodoFragment extends Fragment{
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             CardView cView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_message_item,
                     parent, false);
+            //cView.setCardBackgroundColor();
             return new ViewHolder(cView);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             TodoMessage currentMessage = mMessages.get(position);
-
+            if(position % 2 == 0) {
+                holder.setBackGroundColor(Color.RED);
+            }
+            else{
+                holder.setBackGroundColor(Color.BLUE);
+            }
             holder.todoMessageTextView.setText(currentMessage.getData());
             holder.hourCreatedTextView.setText(currentMessage.getHourCreated());
+
         }
+
     }
 }

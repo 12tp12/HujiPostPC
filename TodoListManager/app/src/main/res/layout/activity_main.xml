@@ -45,7 +45,8 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/blue_button_color"
+        app:backgroundTint="@color/colorAccent"
+
         android:clickable="true"
         />
 </RelativeLayout>

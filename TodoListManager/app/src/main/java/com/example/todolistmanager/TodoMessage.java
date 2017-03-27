@@ -15,11 +15,16 @@ public class TodoMessage {
 
     private String data;
     private String hourCreated;
-    //private String todoHour;
+    private String todoHour;
 
-    public TodoMessage(String data){
+
+
+    private String todoDate;
+
+    public TodoMessage(String data, String todoHour, String todoDate){
         this.data = data;
-        //this.todoHour = todoHour;
+        this.todoHour = todoHour;
+        this.todoDate = todoDate;
         this.hourCreated = new SimpleDateFormat("HH:mm").format(new Date());
         Log.i("Message info", "Date is " + this.hourCreated);
 
@@ -40,14 +45,20 @@ public class TodoMessage {
         this.hourCreated = hourCreated;
     }
 
-//    public String getTodoHour() {
-//        return todoHour;
-//    }
-//
-//    public void setTodoHour(String todoHour) {
-//        this.todoHour = todoHour;
-//    }
+    public String getTodoHour() {
+        return todoHour;
+    }
 
+    public void setTodoHour(String todoHour) {
+        this.todoHour = todoHour;
+    }
 
+    public String getTodoDate() {
+        return todoDate;
+    }
+
+    public void setTodoDate(String todoDate) {
+        this.todoDate = todoDate;
+    }
 }
 

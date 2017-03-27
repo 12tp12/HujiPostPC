@@ -17,10 +17,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.DialogInterface;
-import 	android.app.AlertDialog;
-
+import android.widget.Button;
 import java.util.ArrayList;
+import android.content.Intent;
+import android.net.Uri;
+import android.widget.PopupMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.support.v4.app.ActivityCompat;
+import 	android.Manifest;
+import android.content.pm.PackageManager;
+import 	java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class TodoFragment extends Fragment{
 
@@ -63,12 +71,12 @@ public class TodoFragment extends Fragment{
         return pView;
     }
 
-    public void onMessageSend(String data)
+    public void onMessageSend(String data, String todoHour, String todoDate)
     {
         Log.i("message adder", "message is " + data);
         if(!TextUtils.isEmpty(data))
         {
-            adapter.addItem(new TodoMessage(data));
+            adapter.addItem(new TodoMessage(data, todoHour, todoDate));
             toast.cancel();
         }
         else
@@ -83,36 +91,69 @@ public class TodoFragment extends Fragment{
         {
             TextView todoMessageTextView;
             TextView hourCreatedTextView;
+            TextView hourTextView;
+            TextView dateTextView;
             CardView cv;
+            //final String msg;
+
             protected ViewHolder(final CardView cv)
             {
                 super(cv);
                 this.cv = cv;
                 this.todoMessageTextView = (TextView) cv.findViewById(R.id.todo_message_body);
+                //this.msg = this.todoMessageTextView.toString();
                 this.hourCreatedTextView = (TextView) cv.findViewById(R.id.todo_message_create_time);
+                this.hourTextView = (TextView) cv.findViewById(R.id.dateTodo);
+                this.dateTextView = (TextView) cv.findViewById(R.id.timeTodo);
+//
                 cv.setLongClickable(true);
                 cv.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-//                        int position = getAdapterPosition();
-//                        adapter.notifyItemRemoved(position);
-//                        adapter.notifyItemRangeChanged(position, adapter.getmMessages().size());
-                        AlertDialog dialog = new AlertDialog.Builder(cv.getContext())
-                                .setTitle("Delete Task?")
-                                .setMessage("Sure you want to delete this task?")
-                                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        int position = getAdapterPosition();
-                                        adapter.getmMessages().remove(position);
-                                        adapter.notifyItemRemoved(position);
-                                        adapter.notifyItemRangeChanged(position, adapter.getmMessages().size());
+                        PopupMenu popup = new PopupMenu(getContext(), cv);
+                        popup.getMenu().add("Delete");
+                        final String msgg = todoMessageTextView.getText().toString();
 
+                        if(msgg.substring(0,4).equals("Call")){
+                            popup.getMenu().add("Call");
+                        }
+                        //Inflating the Popup using xml file
+                        popup.getMenuInflater().inflate(R.menu.popup_men, popup.getMenu());
+
+                        //registering popup with OnMenuItemClickListener
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                if(item.getTitle().equals("Delete")) {
+                                    int position = getAdapterPosition();
+                                    adapter.getmMessages().remove(position);
+                                    adapter.notifyItemRemoved(position);
+                                    adapter.notifyItemRangeChanged(position, adapter.getmMessages().size());
+                                    Toast.makeText(getContext(), "Successfully Deleted!", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+                                    Pattern pattern = Pattern.compile("Call\\s([0-9-()]+)");
+                                    Matcher matcher = pattern.matcher(msgg);
+                                    if (matcher.find()) {
+                                        //System.out.println(matcher.group(0));
+                                        Log.i("debuggingdd", matcher.group(1).toString());
+                                        String  tel = "tel:"+matcher.group(1).toString();
+                                        phoneIntent.setData(Uri.parse(tel));
+                                        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                            return true;
+                                        }
+                                        startActivity(phoneIntent);
+                                        Toast.makeText(getContext(), "Calling..." + item.getTitle(), Toast.LENGTH_SHORT).show();
                                     }
-                                })
-                                .setNegativeButton("Cancel", null)
-                                .create();
-                        dialog.show();
+                                    else{
+                                        Toast.makeText(getContext(), "Invalid Phone Number!" + item.getTitle(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                return true;
+                            }
+                        });
+
+                        popup.show();
                         return true;
                     }
                 });
@@ -162,13 +203,15 @@ public class TodoFragment extends Fragment{
         public void onBindViewHolder(ViewHolder holder, int position) {
             TodoMessage currentMessage = mMessages.get(position);
             if(position % 2 == 0) {
-                holder.setBackGroundColor(Color.RED);
+                holder.setBackGroundColor(Color.parseColor("#58D3F7"));
             }
             else{
-                holder.setBackGroundColor(Color.BLUE);
+                holder.setBackGroundColor(Color.parseColor("#F5DA81"));
             }
             holder.todoMessageTextView.setText(currentMessage.getData());
             holder.hourCreatedTextView.setText(currentMessage.getHourCreated());
+            holder.dateTextView.setText(currentMessage.getTodoDate());
+            holder.hourTextView.setText(currentMessage.getTodoHour());
 
         }
 

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#2E9AFE</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#58D3F7</color>
     <color name="blue_button_color">#1956F0</color>
-    <color name="blue_button_color2">#1954F0</color>
+    <color name="add_btn">#64FE2E</color>
+    <color name="cancel_btn">#FA5858</color>
+    <color name="date_color">#2E9AFE</color>
+    <color name="cardview_color">#F5DA81</color>
 </resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+<LinearLayout android:id="@+id/dialog_layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_alignParentBottom="true">
+
+    <EditText
+        android:id="@+id/editTextNewTask"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:endYear="2050"
+        android:startYear="2017"
+        android:headerBackground="@color/date_color"
+        android:backgroundTint="@color/date_color"
+        android:clickable="true"
+
+        />
+
+    <TimePicker
+        android:id="@+id/timePicker1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true"
+        android:animateLayoutChanges="false"
+        android:timePickerMode="spinner"
+        android:clickable="true"
+        android:headerBackground="@color/date_color"
+        />
+
+    <Button
+        android:id="@+id/AddButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:background="@color/add_btn"
+        android:text="Add"
+        android:clickable="true"
+        />
+
+    <Button
+        android:id="@+id/CancelButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:background="@color/cancel_btn"
+                android:text="Cancel"
+        android:clickable="true"/>
+
+</LinearLayout>
+
+</ScrollView>

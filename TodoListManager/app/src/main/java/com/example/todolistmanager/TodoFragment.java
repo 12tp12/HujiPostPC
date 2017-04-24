@@ -27,15 +27,28 @@ import android.view.MenuItem;
 import android.support.v4.app.ActivityCompat;
 import 	android.Manifest;
 import android.content.pm.PackageManager;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import 	java.util.regex.Pattern;
 import java.util.regex.Matcher;
+
+import static android.R.attr.data;
+import static android.R.attr.id;
 
 public class TodoFragment extends Fragment{
 
     private RecyclerView recyclerView;
     private Adapter adapter;
     private Toast toast;
-
+    private FirebaseAuth mAuth =  FirebaseAuth.getInstance();
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+    private final String TAG = "dfdfdf";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,29 +67,32 @@ public class TodoFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View pView = inflater.inflate(R.layout.todo_layout, container, false);
-        recyclerView = (RecyclerView) pView.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        View pView = null;
+        try {
+            pView = inflater.inflate(R.layout.todo_layout, container, false);
+            recyclerView = (RecyclerView) pView.findViewById(R.id.recycler_view);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new Adapter();
-        recyclerView.setAdapter(adapter);
-        if (savedInstanceState != null)
-        {
-            adapter.setmMessages((ArrayList<TodoMessage>)savedInstanceState.getSerializable("adapterList"));
-            Log.i("debugging", "restored last messages...");
+            adapter = new Adapter();
+            recyclerView.setAdapter(adapter);
+            if (savedInstanceState != null) {
+                adapter.setmMessages((ArrayList<TodoMessage>) savedInstanceState.getSerializable("adapterList"));
+                Log.i("debugging", "restored last messages...");
+            }
         }
-
-
+        catch (Exception ex){
+            Log.d(TAG, ex.getMessage());
+        }
 
         return pView;
     }
 
-    public void onMessageSend(String data, String todoHour, String todoDate)
+    public void onMessageSend(TodoMessage msg)
     {
-        Log.i("message adder", "message is " + data);
-        if(!TextUtils.isEmpty(data))
+        Log.i("message adder", "message is " + msg.getData());
+        if(!TextUtils.isEmpty(msg.getData()))
         {
-            adapter.addItem(new TodoMessage(data, todoHour, todoDate));
+            adapter.addItem(msg);
             toast.cancel();
         }
         else
@@ -95,6 +111,7 @@ public class TodoFragment extends Fragment{
             TextView dateTextView;
             CardView cv;
             //final String msg;
+
 
             protected ViewHolder(final CardView cv)
             {
@@ -129,6 +146,8 @@ public class TodoFragment extends Fragment{
                                     adapter.notifyItemRemoved(position);
                                     adapter.notifyItemRangeChanged(position, adapter.getmMessages().size());
                                     Toast.makeText(getContext(), "Successfully Deleted!", Toast.LENGTH_SHORT).show();
+                                    mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child( String.valueOf(adapter.mMessages.get(position).getIdMsg())).setValue(null);
+
                                 }
                                 else {
                                     Intent phoneIntent = new Intent(Intent.ACTION_CALL);

@@ -1,6 +1,10 @@
 # HujiPostPC
 This repository includes all exercises in course POST PC in HUJI by Tomer Patel
 
+#Ex3 - V3: 
+Added a Google user login to the app. Each google user has is own tasks.
+The tasks and the managing users are by Google's Firebase
+
 #EX2 - TodoListManager
 This branch includes the ex2 in the POST PC course. 
 The ex is a simple todo list manager - adds and deletes todo msgs.
